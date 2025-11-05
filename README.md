@@ -1,5 +1,5 @@
 # Clay, A UI Layout Library
-**_Clay_** (short for **C Layout**) is a high performance 2D UI layout library.
+**_Clay_** (short for **C Layout**) is a high performance 2D UI layout library, by [Nic Barker](https://github.com/nicbarker).
 
 ### Major Features
 - Microsecond layout performance
@@ -18,9 +18,21 @@ You can also watch the [introduction video](https://youtu.be/DYWTw19_8r4) for an
 
 _An example GUI application built with clay_
 
+## Installation
+
+Run:
+```bash
+$ npm i clay.c
+```
+
+And then include `clay.h` as follows:
+```c
+#include "node_modules/clay.c/clay.h"
+```
+
 ## Quick Start
 
-Download or clone clay.h and include it after defining `CLAY_IMPLEMENTATION` in one file.
+Include `clay.h` after defining `CLAY_IMPLEMENTATION` in one file.
 
 ```C
 // Must be defined in one file, _before_ #include "clay.h"
@@ -2349,3 +2361,10 @@ A [Clay_String](#clay_string) that provides a human readable description of the 
 A generic pointer to extra userdata that is transparently passed through from `Clay_Initialize` to Clay's error handler callback. Defaults to NULL.
 
 ---
+
+<br>
+<br>
+
+
+[![ORG](https://img.shields.io/badge/org-nodef-green?logo=Org)](https://nodef.github.io)
+![](https://ga-beacon.deno.dev/G-RC63DPBH3P:SH3Eq-NoQ9mwgYeHWxu7cw/github.com/nodef/clay.c)
