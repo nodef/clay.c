@@ -18,17 +18,51 @@ You can also watch the [introduction video](https://youtu.be/DYWTw19_8r4) for an
 
 _An example GUI application built with clay_
 
+<br>
+
 ## Installation
 
 Run:
-```bash
+
+```sh
 $ npm i clay.c
 ```
 
 And then include `clay.h` as follows:
+
 ```c
+// main.c
+#define CLAY_IMPLEMENTATION
 #include "node_modules/clay.c/clay.h"
+
+int main() { /* ... */ }
 ```
+
+And then compile with `clang` or `gcc` as usual.
+
+```bash
+$ clang main.c  # or, use gcc
+$ gcc   main.c
+```
+
+You may also use a simpler approach:
+
+```c
+// main.c
+#define CLAY_IMPLEMENTATION
+#include <clay.h>
+
+int main() { /* ... */ }
+```
+
+If you add the path `node_modules/clay.c` to your compiler's include paths.
+
+```bash
+$ clang -I./node_modules/clay.c main.c  # or, use gcc
+$ gcc   -I./node_modules/clay.c main.c
+```
+
+<br>
 
 ## Quick Start
 
@@ -133,14 +167,14 @@ int main() {
     }
 }
 ```
-    
+
 The above example, rendered correctly will look something like the following:
 
 ![Clay Example](https://github.com/user-attachments/assets/1928c6d4-ada9-4a4c-a3d1-44fe9b23b3bd)
 
 In summary, the general order of steps is:
 
-1. [Clay_SetLayoutDimensions(dimensions)](#clay_setlayoutdimensions)	
+1. [Clay_SetLayoutDimensions(dimensions)](#clay_setlayoutdimensions)
 2. [Clay_SetPointerState(pointerPosition, isPointerDown)](#clay_setpointerstate)
 3. [Clay_UpdateScrollContainers(enableDragScrolling, scrollDelta, deltaTime)](#clay_updatescrollcontainers)
 4. [Clay_BeginLayout()](#clay_beginlayout)
@@ -152,55 +186,85 @@ For help starting out or to discuss clay, considering joining [the discord serve
 
 ## Summary
 
-- [High Level Documentation](#high-level-documentation)
-  - [Building UI Hierarchies](#building-ui-hierarchies)
-  - [Configuring Layout and Styling UI Elements](#configuring-layout-and-styling-ui-elements)
-  - [Element IDs](#element-ids)
-  - [Mouse, Touch and Pointer Interactions](#mouse-touch-and-pointer-interactions)
-  - [Scrolling Elements](#scrolling-elements)
-  - [Floating Elements](#floating-elements-absolute-positioning)
-  - [Custom Elements](#laying-out-your-own-custom-elements)
-  - [Retained Mode Rendering](#retained-mode-rendering)
-  - [Visibility Culling](#visibility-culling)
-  - [Preprocessor Directives](#preprocessor-directives)
-  - [Bindings](#bindings-for-non-c)
-  - [Debug Tools](#debug-tools)
+- [Clay, A UI Layout Library](#clay-a-ui-layout-library)
+    - [Major Features](#major-features)
+  - [Installation](#installation)
+  - [Quick Start](#quick-start)
+  - [Summary](#summary)
+  - [High Level Documentation](#high-level-documentation)
+    - [Building UI Hierarchies](#building-ui-hierarchies)
+    - [Configuring Layout and Styling UI Elements](#configuring-layout-and-styling-ui-elements)
+    - [Element IDs](#element-ids)
+    - [Mouse, Touch and Pointer Interactions](#mouse-touch-and-pointer-interactions)
+    - [Scrolling Elements](#scrolling-elements)
+    - [Floating Elements ("Absolute" Positioning)](#floating-elements-absolute-positioning)
+    - [Laying Out Your Own Custom Elements](#laying-out-your-own-custom-elements)
+    - [Retained Mode Rendering](#retained-mode-rendering)
+    - [Visibility Culling](#visibility-culling)
+    - [Preprocessor Directives](#preprocessor-directives)
+    - [Bindings for non C](#bindings-for-non-c)
+    - [Other implementations](#other-implementations)
+    - [Debug Tools](#debug-tools)
+    - [Running more than one Clay instance](#running-more-than-one-clay-instance)
 - [API](#api)
-  - [Naming Conventions](#naming-conventions)
+    - [Naming Conventions](#naming-conventions)
   - [Public Functions](#public-functions)
-    - [Lifecycle](#lifecycle-for-public-functions)
-    - [Clay_MinMemorySize](#clay_minmemorysize)
-    - [Clay_CreateArenaWithCapacityAndMemory](#clay_createarenawithcapacityandmemory)
-    - [Clay_SetMeasureTextFunction](#clay_setmeasuretextfunction)
-    - [Clay_ResetMeasureTextCache](#clay_resetmeasuretextcache)
-    - [Clay_SetMaxElementCount](#clay_setmaxelementcount)
-    - [Clay_SetMaxMeasureTextCacheWordCount](#clay_setmaxmeasuretextcachewordcount)
-    - [Clay_Initialize](#clay_initialize)
-    - [Clay_GetCurrentContext](#clay_getcurrentcontext)
-    - [Clay_SetCurrentContext](#clay_setcurrentcontext)
-    - [Clay_SetLayoutDimensions](#clay_setlayoutdimensions)
-    - [Clay_SetPointerState](#clay_setpointerstate)
-    - [Clay_UpdateScrollContainers](#clay_updatescrollcontainers)
-    - [Clay_BeginLayout](#clay_beginlayout)
-    - [Clay_EndLayout](#clay_endlayout)
-    - [Clay_Hovered](#clay_hovered)
-    - [Clay_OnHover](#clay_onhover)
-    - [Clay_PointerOver](#clay_pointerover)
-    - [Clay_GetScrollContainerData](#clay_getscrollcontainerdata)
-    - [Clay_GetElementData](#clay_getelementdata)
-    - [Clay_GetElementId](#clay_getelementid)
+    - [Lifecycle for public functions](#lifecycle-for-public-functions)
+    - [Clay\_MinMemorySize](#clay_minmemorysize)
+    - [Clay\_CreateArenaWithCapacityAndMemory](#clay_createarenawithcapacityandmemory)
+    - [Clay\_SetMeasureTextFunction](#clay_setmeasuretextfunction)
+    - [Clay\_ResetMeasureTextCache](#clay_resetmeasuretextcache)
+    - [Clay\_SetMaxElementCount](#clay_setmaxelementcount)
+    - [Clay\_SetMaxMeasureTextCacheWordCount](#clay_setmaxmeasuretextcachewordcount)
+    - [Clay\_Initialize](#clay_initialize)
+    - [Clay\_SetCurrentContext](#clay_setcurrentcontext)
+    - [Clay\_GetCurrentContext](#clay_getcurrentcontext)
+    - [Clay\_SetLayoutDimensions](#clay_setlayoutdimensions)
+    - [Clay\_SetPointerState](#clay_setpointerstate)
+    - [Clay\_UpdateScrollContainers](#clay_updatescrollcontainers)
+    - [Clay\_GetScrollOffset](#clay_getscrolloffset)
+    - [Clay\_BeginLayout](#clay_beginlayout)
+    - [Clay\_EndLayout](#clay_endlayout)
+    - [Clay\_Hovered](#clay_hovered)
+    - [Clay\_OnHover](#clay_onhover)
+    - [Clay\_PointerOver](#clay_pointerover)
+    - [Clay\_GetScrollContainerData](#clay_getscrollcontainerdata)
+    - [Clay\_GetElementData](#clay_getelementdata)
+    - [Clay\_GetElementId](#clay_getelementid)
   - [Element Macros](#element-macros)
-    - [CLAY](#clay)
-    - [CLAY_ID](#clay_id)
-    - [CLAY_IDI](#clay_idi)
-  - [Data Structures & Defs](#data-structures--definitions)
-    - [Clay_String](#clay_string)
-    - [Clay_ElementId](#clay_elementid)
-    - [Clay_RenderCommandArray](#clay_rendercommandarray)
-    - [Clay_RenderCommand](#clay_rendercommand)
-    - [Clay_ScrollContainerData](#clay_scrollcontainerdata)
-    - [Clay_ErrorHandler](#clay_errorhandler)
-    - [Clay_ErrorData](#clay_errordata)
+    - [CLAY()](#clay)
+    - [CLAY\_AUTO\_ID()](#clay_auto_id)
+    - [CLAY\_TEXT()](#clay_text)
+    - [CLAY\_ID](#clay_id)
+    - [CLAY\_SID()](#clay_sid)
+    - [CLAY\_IDI()](#clay_idi)
+    - [CLAY\_SIDI()](#clay_sidi)
+    - [CLAY\_ID\_LOCAL()](#clay_id_local)
+    - [CLAY\_SID\_LOCAL()](#clay_sid_local)
+    - [CLAY\_IDI\_LOCAL()](#clay_idi_local)
+    - [CLAY\_SIDI\_LOCAL()](#clay_sidi_local)
+  - [Data Structures \& Definitions](#data-structures--definitions)
+    - [Clay\_ElementDeclaration](#clay_elementdeclaration)
+    - [Clay\_LayoutConfig](#clay_layoutconfig)
+    - [Clay\_ImageElementConfig](#clay_imageelementconfig)
+    - [Clay\_AspectRatioElementConfig](#clay_aspectratioelementconfig)
+    - [Clay\_ImageElementConfig](#clay_imageelementconfig-1)
+    - [Clay\_ClipElementConfig](#clay_clipelementconfig)
+    - [Clay\_BorderElementConfig](#clay_borderelementconfig)
+    - [Clay\_FloatingElementConfig](#clay_floatingelementconfig)
+    - [Clay\_CustomElementConfig](#clay_customelementconfig)
+    - [Clay\_Color](#clay_color)
+    - [Clay\_String](#clay_string)
+    - [Clay\_ElementId](#clay_elementid)
+    - [Clay\_RenderCommandArray](#clay_rendercommandarray)
+    - [Clay\_RenderCommand](#clay_rendercommand)
+    - [Clay\_ScrollContainerData](#clay_scrollcontainerdata)
+    - [Clay\_ElementData](#clay_elementdata)
+    - [Clay\_PointerData](#clay_pointerdata)
+    - [Clay\_ErrorHandler](#clay_errorhandler)
+    - [Clay\_ErrorData](#clay_errordata)
+
+<br>
 
 ## High Level Documentation
 
@@ -249,7 +313,7 @@ CLAY(CLAY_ID("parent"), { .layout = { .layoutDirection = CLAY_TOP_TO_BOTTOM } })
 ```
 
 ### Configuring Layout and Styling UI Elements
-The layout and style of clay elements is configured with the [Clay_ElementDeclaration](#clay_elementdeclaration) struct passed to the `CLAY()` macro. 
+The layout and style of clay elements is configured with the [Clay_ElementDeclaration](#clay_elementdeclaration) struct passed to the `CLAY()` macro.
 ```C
 CLAY(CLAY_ID("box"), { .layout = { .padding = { 8, 8, 8, 8 }, .layoutDirection = CLAY_TOP_TO_BOTTOM } }) {
     // Children are 8px inset into parent, and laid out top to bottom
@@ -340,7 +404,7 @@ CLAY(CLAY_ID("Button"), { .layout = { .padding = CLAY_PADDING_ALL(8) } }) {
 
 **Before / After UI declaration**
 
-If you want to query mouse / pointer overlaps outside layout declarations, you can use the function `bool Clay_PointerOver(Clay_ElementId id)`, which takes an [element id](#element-ids) and returns a bool representing whether the current pointer position is within its bounding box. 
+If you want to query mouse / pointer overlaps outside layout declarations, you can use the function `bool Clay_PointerOver(Clay_ElementId id)`, which takes an [element id](#element-ids) and returns a bool representing whether the current pointer position is within its bounding box.
 ```C
 // Reminder: Clay_SetPointerState must be called before functions that rely on pointer position otherwise it will have no effect
 Clay_Vector2 mousePosition = { x, y };
@@ -477,7 +541,7 @@ There are some general techniques that can be used to integrate clay into a reta
 - `Clay_RenderCommand` includes the `uint32_t id` that was used to declare the element. If unique ids are used, these can be mapped to persistent graphics objects across multiple frames / layouts.
 - Render commands are culled automatically to only currently visible elements, and `Clay_RenderCommand` is a small enough struct that you can simply compare the memory of two render commands with matching IDs to determine if the element is "dirty" and needs to be re-rendered or updated.
 
-For a worked example, see the provided [HTML renderer](https://github.com/nicbarker/clay/blob/main/renderers/web/html/clay-html-renderer.html). This renderer converts clay layouts into persistent HTML documents with minimal changes per frame.  
+For a worked example, see the provided [HTML renderer](https://github.com/nicbarker/clay/blob/main/renderers/web/html/clay-html-renderer.html). This renderer converts clay layouts into persistent HTML documents with minimal changes per frame.
 
 ### Visibility Culling
 Clay provides a built-in visibility-culling mechanism that is **enabled by default**. It will only output render commands for elements that are visible - that is, **at least one pixel of their bounding box is inside the viewport.**
@@ -550,6 +614,8 @@ Clay_BeginLayout();
 Clay_RenderCommandArray renderCommands2 = Clay_EndLayout();
 render(renderCommands2);
 ```
+
+<br>
 
 # API
 
@@ -789,7 +855,7 @@ Returns a [Clay_ElementId](#clay_elementid) for the provided id string, used for
 
 **Lifecycle**
 
-`Clay_BeginLayout()` -> `CLAY()` -> `Clay_EndLayout()` 
+`Clay_BeginLayout()` -> `CLAY()` -> `Clay_EndLayout()`
 
 **Notes**
 
@@ -961,7 +1027,7 @@ Element is subject to [culling](#visibility-culling). Otherwise, multiple `Clay_
 
 **CLAY_ID()** is used to generate and attach a [Clay_ElementId](#clay_elementid) to a layout element during declaration.
 
-Note this macro only works with String literals and won't compile if used with a `char*` variable. To use a heap allocated `char*` string as an ID, use [CLAY_SID](#clay_sid). 
+Note this macro only works with String literals and won't compile if used with a `char*` variable. To use a heap allocated `char*` string as an ID, use [CLAY_SID](#clay_sid).
 
 To regenerate the same ID outside of layout declaration when using utility functions such as [Clay_PointerOver](#clay_pointerover), use the [Clay_GetElementId](#clay_getelementid) function.
 
@@ -1148,7 +1214,7 @@ Uses [Clay_ImageElementConfig](#clay_imageelementconfig). Configures the element
 
 `CLAY(CLAY_ID("Element"), { .floating = { .attachTo = CLAY_ATTACH_TO_PARENT } })`
 
-Uses [Clay_FloatingElementConfig](#clay_floatingelementconfig). Configures the element as an floating element, which allows it to stack "in front" and "on top" of other elements without affecting sibling or parent size or position. 
+Uses [Clay_FloatingElementConfig](#clay_floatingelementconfig). Configures the element as an floating element, which allows it to stack "in front" and "on top" of other elements without affecting sibling or parent size or position.
 
 ---
 
@@ -1198,8 +1264,8 @@ CLAY(CLAY_ID("BoxInline"), { .color = { 200, 200, 100, 255 }, .cornerRadius = CL
     // child elements
 }
 // Declare a scrolling container with a colored background
-CLAY(CLAY_ID("ScrollingContainer"), { 
-    .backgroundColor = { 200, 200, 100, 255 }, 
+CLAY(CLAY_ID("ScrollingContainer"), {
+    .backgroundColor = { 200, 200, 100, 255 },
     .cornerRadius = CLAY_CORNER_RADIUS(10)
     .clip = { .vertical = true, .childOffset = Clay_GetScrollOffset() }
 ) {
@@ -1220,7 +1286,7 @@ Element is subject to [culling](#visibility-culling). Otherwise, a single `Clay_
 Clay_LayoutConfig {
     Clay_LayoutDirection layoutDirection = CLAY_LEFT_TO_RIGHT (default) | CLAY_TOP_TO_BOTTOM;
     Clay_Padding padding {
-        u16 left; u16 right; u16 top; u16 bottom; 
+        u16 left; u16 right; u16 top; u16 bottom;
     };
     uint16_t childGap;
     Clay_ChildAlignment childAlignment {
@@ -1497,7 +1563,7 @@ Enables or disables vertical clipping for this container element.
 
 **Rendering**
 
-Enabling clip for an element will result in two additional render commands: 
+Enabling clip for an element will result in two additional render commands:
 - `commandType = CLAY_RENDER_COMMAND_TYPE_SCISSOR_START`, which should create a rectangle mask with its `boundingBox` and is **not** subject to [culling](#visibility-culling)
 - `commandType = CLAY_RENDER_COMMAND_TYPE_SCISSOR_END`, which disables the previous rectangle mask and is **not** subject to [culling](#visibility-culling)
 
@@ -1535,7 +1601,7 @@ typedef struct Clay_BorderElementConfig
         uint16_t right;
         uint16_t top;
         uint16_t bottom;
-        uint16_t betweenChildren;  
+        uint16_t betweenChildren;
     };
 } Clay_BorderElementConfig;
 ```
@@ -1618,7 +1684,7 @@ Rendering of borders and rounded corners is left up to the user. See the provide
 
 Floating containers:
 
-- With the default configuration, attach to the top left corner of their "parent" 
+- With the default configuration, attach to the top left corner of their "parent"
 - Don't affect the width and height of their parent
 - Don't affect the positioning of sibling elements
 - Depending on their z-index can appear above or below other elements, partially or completely occluding them
@@ -1663,7 +1729,7 @@ Clay_FloatingElementConfig {
 
 `CLAY(CLAY_ID("Floating"), { .floating = { .offset = { -24, -24 } } })`
 
-Used to apply a position offset to the floating container _after_ all other layout has been calculated. 
+Used to apply a position offset to the floating container _after_ all other layout has been calculated.
 
 ---
 
@@ -1687,7 +1753,7 @@ All floating elements (as well as their entire child hierarchies) will be sorted
 
 `CLAY(CLAY_ID("Floating"), { .floating = { .parentId = Clay_GetElementId("HeaderButton").id } })`
 
-By default, floating containers will "attach" to the parent element that they are declared inside. However, there are cases where this limitation could cause significant performance or ergonomics problems. `.parentId` allows you to specify a `CLAY_ID().id` to attach the floating container to. The parent element with the matching id can be declared anywhere in the hierarchy, it doesn't need to be declared before or after the floating container in particular.  
+By default, floating containers will "attach" to the parent element that they are declared inside. However, there are cases where this limitation could cause significant performance or ergonomics problems. `.parentId` allows you to specify a `CLAY_ID().id` to attach the floating container to. The parent element with the matching id can be declared anywhere in the hierarchy, it doesn't need to be declared before or after the floating container in particular.
 
 Consider the following case:
 ```C
@@ -1756,7 +1822,7 @@ CLAY(CLAY_ID("OptionTooltip"), { .floating = { .attachTo = CLAY_ATTACH_TO_ELEMEN
 
 `CLAY(CLAY_ID("Floating"), { .floating = { .attachment = { .element = CLAY_ATTACH_POINT_LEFT_CENTER, .parent = CLAY_ATTACH_POINT_RIGHT_TOP } } }) {}`
 
-In terms of positioning the floating container, `.attachment` specifies 
+In terms of positioning the floating container, `.attachment` specifies
 
 - The point on the floating container (`.element`)
 - The point on the parent element that it "attaches" to (`.parent`)
@@ -1777,7 +1843,7 @@ For example:
 
 `CLAY({ .floating = { .pointerCaptureMode = CLAY_POINTER_CAPTURE_MODE_CAPTURE } })`
 
-Controls whether pointer events like hover and click should pass through to content underneath this floating element, or whether the pointer should be "captured" by this floating element. Defaults to `CLAY_POINTER_CAPTURE_MODE_CAPTURE`. 
+Controls whether pointer events like hover and click should pass through to content underneath this floating element, or whether the pointer should be "captured" by this floating element. Defaults to `CLAY_POINTER_CAPTURE_MODE_CAPTURE`.
 
 **Examples**
 
@@ -1828,9 +1894,9 @@ When using `.parentId`, the floating container can be declared anywhere after `B
 
 **Notes**
 
-**Clay_CustomElementConfig** allows the user to pass custom data to the renderer. 
+**Clay_CustomElementConfig** allows the user to pass custom data to the renderer.
 
-**Struct Definition (Pseudocode)** 
+**Struct Definition (Pseudocode)**
 
 ```C
 typedef struct
@@ -2366,6 +2432,6 @@ A generic pointer to extra userdata that is transparently passed through from `C
 <br>
 
 
+[![SRC](https://img.shields.io/badge/src-repo-green?logo=Org)](https://github.com/nicbarker/clay)
 [![ORG](https://img.shields.io/badge/org-nodef-green?logo=Org)](https://nodef.github.io)
 ![](https://ga-beacon.deno.dev/G-RC63DPBH3P:SH3Eq-NoQ9mwgYeHWxu7cw/github.com/nodef/clay.c)
-[![SRC](https://img.shields.io/badge/src-repo-green?logo=Org)](https://github.com/nicbarker/clay)

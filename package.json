@@ -1,6 +1,6 @@
 {
   "name": "clay.c",
-  "version": "0.14.0",
+  "version": "0.14.1",
   "description": "High performance UI layout library in C; Nic Barker (2024).",
   "keywords": [
     "c",
@@ -19,5 +19,9 @@
     "url": "git+https://github.com/nodef/clay.c.git"
   },
   "license": "Zlib",
-  "main": "clay.h"
+  "author": "wolfram77@gmail.com",
+  "main": "clay.h",
+  "scripts": {
+    "test": "bash build.sh test"
+  }
 }

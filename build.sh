@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
-URL="https://excellmedia.dl.sourceforge.net/project/asio/asio/1.36.0%20%28Stable%29/boost_asio_1_36_0.zip?viasf=1"
+# Fetch the latest version of the library
+fetch() {
+if [ -d "clay" ]; then return; fi
+URL="https://github.com/nicbarker/clay/archive/refs/heads/main.zip"
 ZIP="${URL##*/}"
-ZIP="${ZIP%%\?*}"
-DIR="${ZIP%.zip}"
+DIR="clay-main"
 mkdir -p .build
 cd .build
 
@@ -22,10 +24,26 @@ if [ ! -d "$DIR" ]; then
   mv "$ZIP.bak" "$ZIP"
   echo ""
 fi
+cd ..
 
 # Copy the libs to the package directory
-echo "Copying libs to boost/ ..."
-rm -rf ../boost
-mkdir -p ../boost
-cp -rf "$DIR/boost"/* ../boost/
+echo "Copying libs to clay/ ..."
+rm -rf clay
+mkdir -p clay
+cp -f  ".build/$DIR/clay.h" clay/
+cp -rf ".build/$DIR/renderers" clay/
 echo ""
+}
+
+
+# Test the project
+test() {
+echo "Running 01-win32_gdi.c ..."
+clang -I. -o 01.exe examples/01-win32_gdi.c  && ./01.exe && echo -e "\n"
+}
+
+
+# Main script
+if [[ "$1" == "test" ]]; then test
+elif [[ "$1" == "fetch" ]]; then fetch
+else echo "Usage: $0 {fetch|test}"; fi
