@@ -1,6 +1,6 @@
 {
   "name": "clay.c",
-  "version": "0.14.1",
+  "version": "0.14.2",
   "description": "High performance UI layout library in C; Nic Barker (2024).",
   "keywords": [
     "c",
